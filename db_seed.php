@@ -41,11 +41,11 @@ try {
     $users_to_seed = [
         [
             'id' => 1,
-            'account_no' => 'POA00000',
+            'account_no' => 'KS00000',
             'first_name' => 'Root',
             'surname' => 'User',
             'username' => 'root',
-            'email' => 'root@poa.dev',
+            'email' => 'root@kingdomsacco.dev',
             'phone' => null,
             'password' => '$2y$10$CQoZZXkbiWu6/s9vUgBB7OtQuf0JuSOOSYuwsuQDuHSxd1YQy4wbi', // Default password: 'password'
             'role_id' => 1,
@@ -53,11 +53,11 @@ try {
         ],
         [
             'id' => 2,
-            'account_no' => 'POA00001',
+            'account_no' => 'KS00001',
             'first_name' => 'Chairman',
             'surname' => 'Admin',
             'username' => 'chairman',
-            'email' => 'chairman@poa.dev',
+            'email' => 'chairman@kingdomsacco.dev',
             'phone' => null,
             'password' => '$2y$10$CQoZZXkbiWu6/s9vUgBB7OtQuf0JuSOOSYuwsuQDuHSxd1YQy4wbi', // Default password: 'password'
             'role_id' => 2,

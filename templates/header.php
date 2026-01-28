@@ -11,7 +11,7 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POA Savings Management System</title>
+    <title>KINGDOM SACCO Management System</title>
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -54,7 +54,7 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
     <!-- Sidebar -->
     <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-gray-800 text-white flex flex-col transition-transform duration-300 ease-in-out z-30">
         <div class="p-4 border-b border-gray-700 flex justify-center items-center">
-            <img id="logo" src="assets/images/poa_light.png" alt="POA Savings Logo" class="h-10">
+            <img id="logo" src="assets/images/kingdomsacco_light.png" alt="KINGDOM SACCO Logo" class="h-10">
         </div>
         <nav class="flex-grow p-4 overflow-y-auto">
             <ul class="space-y-2">
@@ -122,7 +122,7 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
             $role_names = [1 => 'Root', 2 => 'Chairman', 3 => 'Secretary', 4 => 'Treasurer', 5 => 'Member'];
             $role_name = $role_names[$_SESSION['role_id']] ?? 'Guest';
             ?>
-            <h1 class="text-xl font-bold text-gray-800 dark:text-gray-200 hidden sm:block"><?php echo htmlspecialchars($role_name); ?> of POA Savings and Credit Society</h1>
+            <h1 class="text-xl font-bold text-gray-800 dark:text-gray-200 hidden sm:block"><?php echo htmlspecialchars($role_name); ?> of KINGDOM SACCO</h1>
 
             <!-- Theme Toggle and User Avatar -->
             <div class="flex items-center space-x-4">

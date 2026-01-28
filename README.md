@@ -1,4 +1,4 @@
-# POA Savings Management System
+# KINGDOM SACCO Management System
 
 This is a group savings management system built with PHP.
 

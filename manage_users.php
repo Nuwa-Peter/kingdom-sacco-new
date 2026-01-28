@@ -55,7 +55,7 @@ try {
     $stmt = $pdo->query(
         "SELECT id, username, account_no, email, role_id
          FROM users
-         WHERE account_no != 'POA00000'
+         WHERE account_no != 'KS00000'
          ORDER BY username ASC"
     );
     $users = $stmt->fetchAll();

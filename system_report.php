@@ -21,7 +21,7 @@ try {
         "SELECT u.id, u.username, u.account_no, SUM(s.amount) as total_saved
          FROM users u
          JOIN savings s ON u.id = s.user_id
-         WHERE u.account_no != 'POA00000' -- Exclude root user from report
+         WHERE u.account_no != 'KS00000' -- Exclude root user from report
          GROUP BY u.id, u.username, u.account_no
          ORDER BY total_saved DESC"
     );

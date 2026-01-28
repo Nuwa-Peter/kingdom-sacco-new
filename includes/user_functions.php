@@ -1,14 +1,14 @@
 <?php
 /**
  * Generates a new, unique account number for a user.
- * The format is POAXXXXX, where XXXXX is a zero-padded number.
+ * The format is KSXXXXX, where XXXXX is a zero-padded number.
  *
  * @param PDO $pdo The database connection object.
  * @return string The new, unique account number.
  * @throws Exception If a unique account number cannot be generated.
  */
 function generate_account_number($pdo) {
-    $prefix = 'POA';
+    $prefix = 'KS';
     $padding = 5;
 
     try {

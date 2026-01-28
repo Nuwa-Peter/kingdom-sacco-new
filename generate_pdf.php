@@ -47,13 +47,13 @@ $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 
 // 2. Set document information
 $pdf->SetCreator(PDF_CREATOR);
-$pdf->SetAuthor('POA Savings System');
+$pdf->SetAuthor('KINGDOM SACCO System');
 $pdf->SetTitle('Savings Statement for ' . $user['username']);
 $pdf->SetSubject('Account Statement');
 
 // 3. Set header and footer data
 // TODO: Customize header with Organization Logo/Name
-$pdf->SetHeaderData('', 0, 'POA Savings Statement', 'Account: ' . $user['account_no']);
+$pdf->SetHeaderData('', 0, 'KINGDOM SACCO Statement', 'Account: ' . $user['account_no']);
 $pdf->setFooterData(array(0,64,0), array(0,64,128));
 
 // 4. Set fonts

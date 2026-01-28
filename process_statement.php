@@ -42,12 +42,12 @@ class StatementPDF extends TCPDF {
         $this->SetFont('helvetica', '', 10);
 
         // Logo on its own line
-        $this->Image('assets/images/poa_light.png', '', 8, 30, 0, 'PNG', '', 'T', false, 300, 'C');
+        $this->Image('assets/images/kingdomsacco_light.png', '', 8, 30, 0, 'PNG', '', 'T', false, 300, 'C');
         $this->Ln(18); // Add space after the logo
 
         // Center Company Name
         $this->SetFont('helvetica', 'B', 12);
-        $this->Cell(0, 10, 'POA Savings and Credit Society', 0, 1, 'C');
+        $this->Cell(0, 10, 'KINGDOM SACCO', 0, 1, 'C');
 
         // Center Document Title
         $this->SetFont('helvetica', 'B', 16);
@@ -83,7 +83,7 @@ class StatementPDF extends TCPDF {
         // Set transparency
         $this->SetAlpha(0.1);
         // Add the watermark image
-        $this->Image('assets/images/poa_light.png', 50, 100, 110, 0, 'PNG', '', 'C', true, 300, 'C', false, false, 0);
+        $this->Image('assets/images/kingdomsacco_light.png', 50, 100, 110, 0, 'PNG', '', 'C', true, 300, 'C', false, false, 0);
         // Restore transparency
         $this->SetAlpha(1);
 
@@ -187,7 +187,7 @@ try {
     $pdf = new StatementPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
     $pdf->SetCreator(PDF_CREATOR);
-    $pdf->SetAuthor('POA Savings and Credit Society');
+    $pdf->SetAuthor('KINGDOM SACCO');
     $pdf->SetTitle('Account Statement for ' . $user['username']);
     $pdf->setUserDetails(
         htmlspecialchars($user['username']),
