@@ -12,7 +12,7 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KINGDOM SACCO Management System</title>
-    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="assets/images/kingdomsacco_light.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
@@ -52,16 +52,16 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
     ?>
     <?php if ($is_logged_in): ?>
     <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 bg-gray-800 text-white flex flex-col transition-transform duration-300 ease-in-out z-30">
-        <div class="p-4 border-b border-gray-700 flex justify-center items-center">
-            <img id="logo" src="assets/images/kingdomsacco_light.png" alt="KINGDOM SACCO Logo" class="h-10">
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 flex flex-col transition-transform duration-300 ease-in-out z-30">
+        <div class="p-4 border-b border-sky-300 flex justify-center items-center">
+            <img id="logo" src="assets/images/kingdomsacco_dark.png" alt="KINGDOM SACCO Logo" class="h-10">
         </div>
         <nav class="flex-grow p-4 overflow-y-auto">
             <ul class="space-y-2">
                 <li><a href="dashboard.php" class="block py-2 px-4 rounded hover:bg-gray-700">Dashboard</a></li>
 
                 <li class="pt-4">
-                    <span class="px-4 text-xs text-gray-400 font-semibold uppercase">Member Actions</span>
+                    <span class="px-4 text-xs font-semibold uppercase" style="color: var(--text-sidebar-muted)">Member Actions</span>
                 </li>
                 <li><a href="withdraw.php" class="block py-2 px-4 rounded hover:bg-gray-700">Request Withdrawal</a></li>
                 <li><a href="request_loan.php" class="block py-2 px-4 rounded hover:bg-gray-700">Request Loan</a></li>
@@ -71,10 +71,11 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
 
                 <?php if (in_array($role_id, [1, 2, 3])): // Admin-level actions ?>
                     <li class="pt-4">
-                        <span class="px-4 text-xs text-gray-400 font-semibold uppercase">Admin Controls</span>
+                        <span class="px-4 text-xs font-semibold uppercase" style="color: var(--text-sidebar-muted)">Admin Controls</span>
                     </li>
-                    <li><a href="add_user.php" class="block py-2 px-4 rounded hover:bg-gray-700">Add User</a></li>
+                    <li><a href="add_user.php" class="block py-2 px-4 rounded hover:bg-gray-700">Add Member</a></li>
                     <li><a href="add_saving.php" class="block py-2 px-4 rounded hover:bg-gray-700">Add Saving</a></li>
+                    <li><a href="view_all_savings.php" class="block py-2 px-4 rounded hover:bg-gray-700">View All Savings</a></li>
                     <li><a href="manage_requests.php" class="block py-2 px-4 rounded hover:bg-gray-700">Manage Requests</a></li>
                      <?php if (in_array($role_id, [1, 2])): ?>
                         <li><a href="apply_interest.php" class="block py-2 px-4 rounded hover:bg-gray-700">Apply Interest</a></li>
@@ -83,14 +84,14 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
 
                 <?php if (in_array($role_id, [1, 2, 3, 4])): ?>
                     <li class="pt-4">
-                        <span class="px-4 text-xs text-gray-400 font-semibold uppercase">Reports & Logs</span>
+                        <span class="px-4 text-xs font-semibold uppercase" style="color: var(--text-sidebar-muted)">Reports & Logs</span>
                     </li>
                     <li><a href="reports.php" class="block py-2 px-4 rounded hover:bg-gray-700">System Reports</a></li>
                 <?php endif; ?>
 
                 <?php if (in_array($role_id, [1, 2])): ?>
                     <li class="pt-4">
-                        <span class="px-4 text-xs text-gray-400 font-semibold uppercase">Advanced</span>
+                        <span class="px-4 text-xs font-semibold uppercase" style="color: var(--text-sidebar-muted)">Advanced</span>
                     </li>
                     <li><a href="member_directory.php" class="block py-2 px-4 rounded hover:bg-gray-700">Member Directory</a></li>
                     <li><a href="admin_reset_password.php" class="block py-2 px-4 rounded hover:bg-gray-700">Reset User Password</a></li>
@@ -122,7 +123,7 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
             $role_names = [1 => 'Root', 2 => 'Chairman', 3 => 'Secretary', 4 => 'Treasurer', 5 => 'Member'];
             $role_name = $role_names[$_SESSION['role_id']] ?? 'Guest';
             ?>
-            <h1 class="text-xl font-bold text-gray-800 dark:text-gray-200 hidden sm:block"><?php echo htmlspecialchars($role_name); ?> of KINGDOM SACCO</h1>
+            <h1 class="text-xl font-bold text-gray-900 dark:text-white hidden sm:block"><?php echo htmlspecialchars($role_name); ?> of KINGDOM SACCO</h1>
 
             <!-- Theme Toggle and User Avatar -->
             <div class="flex items-center space-x-4">
