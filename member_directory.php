@@ -1,7 +1,7 @@
 <?php
 require_once 'includes/auth_check.php';
-// Only Root (1) and Chairman (2) can access this page
-check_permissions([1, 2]);
+// Accessible by all logged in members
+check_permissions([1, 2, 3, 4, 5]);
 
 require_once 'config/db_connect.php';
 require_once 'templates/header.php';
@@ -52,13 +52,15 @@ function sort_link($column, $text, $current_column, $current_order) {
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"><?php echo sort_link('phone', 'Phone', $sort_column, $sort_order); ?></th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"><?php echo sort_link('account_no', 'Account No.', $sort_column, $sort_order); ?></th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"><?php echo sort_link('created_at', 'Joined On', $sort_column, $sort_order); ?></th>
+                            <?php if (in_array($_SESSION['role_id'], [1, 2])): ?>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         <?php if (empty($members)): ?>
                             <tr>
-                                <td colspan="10" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">No members found.</td>
+                                <td colspan="<?php echo in_array($_SESSION['role_id'], [1, 2]) ? '10' : '9'; ?>" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">No members found.</td>
                             </tr>
                         <?php else: ?>
                             <?php foreach ($members as $member): ?>
@@ -74,9 +76,11 @@ function sort_link($column, $text, $current_column, $current_order) {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"><?php echo htmlspecialchars($member['phone']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"><?php echo htmlspecialchars($member['account_no']); ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400"><?php echo date('M j, Y', strtotime($member['created_at'])); ?></td>
+                                    <?php if (in_array($_SESSION['role_id'], [1, 2])): ?>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="edit_user.php?id=<?php echo $member['id']; ?>" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                                     </td>
+                                    <?php endif; ?>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>

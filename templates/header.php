@@ -68,6 +68,7 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
                 <li><a href="repay_loan.php" class="block py-2 px-4 rounded hover:bg-sky-400">Repay Loan</a></li>
                 <li><a href="guarantor_requests.php" class="block py-2 px-4 rounded hover:bg-sky-400">Guarantor Requests</a></li>
                 <li><a href="generate_statement.php" class="block py-2 px-4 rounded hover:bg-sky-400">Download Statement</a></li>
+                <li><a href="member_directory.php" class="block py-2 px-4 rounded hover:bg-sky-400">Member Directory</a></li>
 
                 <?php if (in_array($role_id, [1, 2, 3, 4])): // Admin-level actions ?>
                     <li class="pt-4">
@@ -95,7 +96,6 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
                     <li class="pt-4">
                         <span class="px-4 text-xs font-semibold uppercase" style="color: var(--text-sidebar-muted)">Advanced</span>
                     </li>
-                    <li><a href="member_directory.php" class="block py-2 px-4 rounded hover:bg-sky-400">Member Directory</a></li>
                     <li><a href="admin_reset_password.php" class="block py-2 px-4 rounded hover:bg-sky-400">Reset Member Password</a></li>
                     <li><a href="admin_audit_view.php" class="block py-2 px-4 rounded hover:bg-sky-400">Audit View</a></li>
                     <li><a href="admin_analytics_view.php" class="block py-2 px-4 rounded hover:bg-sky-400">Analytics View</a></li>
