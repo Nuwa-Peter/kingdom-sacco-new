@@ -69,6 +69,7 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
                 <li><a href="guarantor_requests.php" class="block py-2 px-4 rounded hover:bg-sky-400">Guarantor Requests</a></li>
                 <li><a href="generate_statement.php" class="block py-2 px-4 rounded hover:bg-sky-400">Download Statement</a></li>
                 <li><a href="member_directory.php" class="block py-2 px-4 rounded hover:bg-sky-400">Member Directory</a></li>
+                <li><a href="edit_user.php?id=<?php echo $_SESSION['user_id']; ?>" class="block py-2 px-4 rounded hover:bg-sky-400">Edit Profile</a></li>
 
                 <?php if (in_array($role_id, [1, 2, 3, 4])): // Admin-level actions ?>
                     <li class="pt-4">
@@ -78,7 +79,7 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
                         <li><a href="add_user.php" class="block py-2 px-4 rounded hover:bg-sky-400">Add Member</a></li>
                     <?php endif; ?>
                     <li><a href="add_saving.php" class="block py-2 px-4 rounded hover:bg-sky-400">Add Saving</a></li>
-                    <li><a href="view_all_savings.php" class="block py-2 px-4 rounded hover:bg-sky-400">View All Savings</a></li>
+                    <li><a href="view_all_savings.php" class="block py-2 px-4 rounded hover:bg-sky-400">View Savings</a></li>
                     <li><a href="manage_requests.php" class="block py-2 px-4 rounded hover:bg-sky-400">Manage Requests</a></li>
                      <?php if (in_array($role_id, [1, 2])): ?>
                         <li><a href="apply_interest.php" class="block py-2 px-4 rounded hover:bg-sky-400">Apply Interest</a></li>

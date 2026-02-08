@@ -1,7 +1,7 @@
 <?php
 require_once 'includes/auth_check.php';
-// Only Root (1) and Chairman (2) can access this page
-check_permissions([1, 2]);
+// Accessible by all logged in members (restricted logic below)
+check_permissions([1, 2, 3, 4, 5]);
 
 require_once 'config/db_connect.php';
 require_once 'templates/header.php';
@@ -10,6 +10,12 @@ $user_id_to_edit = $_GET['id'] ?? null;
 $error = '';
 $success = '';
 $user = null;
+
+// Permission Check: If not Root or Chairman, can only edit self
+if (!in_array($_SESSION['role_id'], [1, 2]) && $user_id_to_edit != $_SESSION['user_id']) {
+    header('Location: dashboard.php'); // Or show an error
+    exit;
+}
 
 if (!$user_id_to_edit) {
     header('Location: member_directory.php');
@@ -93,37 +99,47 @@ try {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="first_name" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">First Name: <span class="text-red-500">*</span></label>
-                        <input type="text" name="first_name" id="first_name" value="<?php echo htmlspecialchars($user['first_name']); ?>" required class="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" name="first_name" id="first_name" value="<?php echo htmlspecialchars($user['first_name'] ?? ''); ?>" required class="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label for="surname" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Surname: <span class="text-red-500">*</span></label>
-                        <input type="text" name="surname" id="surname" value="<?php echo htmlspecialchars($user['surname']); ?>" required class="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" name="surname" id="surname" value="<?php echo htmlspecialchars($user['surname'] ?? ''); ?>" required class="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="username" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Username: <span class="text-red-500">*</span></label>
-                        <input type="text" name="username" id="username" value="<?php echo htmlspecialchars($user['username']); ?>" required class="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" name="username" id="username" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>" required class="block w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     <div>
                         <label for="email" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Email: <span class="text-red-500">*</span></label>
-                        <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" required class="block w-full px-4 py-2 rounded-md">
+                        <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required class="block w-full px-4 py-2 rounded-md">
                     </div>
                     <div>
                         <label for="phone" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Phone:</label>
-                        <input type="text" name="phone" id="phone" value="<?php echo htmlspecialchars($user['phone']); ?>" class="block w-full px-4 py-2 rounded-md">
+                        <input type="text" name="phone" id="phone" value="<?php echo htmlspecialchars($user['phone'] ?? ''); ?>" class="block w-full px-4 py-2 rounded-md">
                     </div>
                     <div>
                         <label for="role_id" class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Role: <span class="text-red-500">*</span></label>
-                        <select name="role_id" id="role_id" required class="block w-full px-4 py-2 rounded-md">
-                            <option value="5" <?php echo $user['role_id'] == 5 ? 'selected' : ''; ?>>Member</option>
-                            <option value="4" <?php echo $user['role_id'] == 4 ? 'selected' : ''; ?>>Treasurer</option>
-                            <option value="3" <?php echo $user['role_id'] == 3 ? 'selected' : ''; ?>>Secretary</option>
-                            <option value="2" <?php echo $user['role_id'] == 2 ? 'selected' : ''; ?>>Chairman</option>
-                             <?php if ($_SESSION['role_id'] == 1): // Only Root can assign Root ?>
-                                <option value="1" <?php echo $user['role_id'] == 1 ? 'selected' : ''; ?>>Root</option>
-                            <?php endif; ?>
-                        </select>
+                        <?php if (in_array($_SESSION['role_id'], [1, 2])): ?>
+                            <select name="role_id" id="role_id" required class="block w-full px-4 py-2 rounded-md">
+                                <option value="5" <?php echo $user['role_id'] == 5 ? 'selected' : ''; ?>>Member</option>
+                                <option value="4" <?php echo $user['role_id'] == 4 ? 'selected' : ''; ?>>Treasurer</option>
+                                <option value="3" <?php echo $user['role_id'] == 3 ? 'selected' : ''; ?>>Secretary</option>
+                                <option value="2" <?php echo $user['role_id'] == 2 ? 'selected' : ''; ?>>Chairman</option>
+                                <?php if ($_SESSION['role_id'] == 1): // Only Root can assign Root ?>
+                                    <option value="1" <?php echo $user['role_id'] == 1 ? 'selected' : ''; ?>>Root</option>
+                                <?php endif; ?>
+                            </select>
+                        <?php else: ?>
+                            <input type="hidden" name="role_id" value="<?php echo $user['role_id']; ?>">
+                            <div class="block w-full px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500">
+                                <?php
+                                $role_names = [1 => 'Root', 2 => 'Chairman', 3 => 'Secretary', 4 => 'Treasurer', 5 => 'Member'];
+                                echo $role_names[$user['role_id']] ?? 'Member';
+                                ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="mt-8 flex justify-between items-center">

@@ -53,9 +53,15 @@ try {
                             <tr>
                                 <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">No members found.</td>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($members as $member):
+                        <?php else:
+                            $grand_total_contributions = 0;
+                            $grand_total_withdrawals = 0;
+                            $grand_total_net = 0;
+                            foreach ($members as $member):
                                 $net_savings = $member['total_contributions'] - $member['total_withdrawals'];
+                                $grand_total_contributions += $member['total_contributions'];
+                                $grand_total_withdrawals += $member['total_withdrawals'];
+                                $grand_total_net += $net_savings;
                             ?>
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
@@ -65,16 +71,16 @@ try {
                                             </div>
                                             <div class="ml-4">
                                                 <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                                    <?php echo htmlspecialchars($member['first_name'] . ' ' . $member['surname']); ?>
+                                                    <?php echo htmlspecialchars(($member['first_name'] ?? '') . ' ' . ($member['surname'] ?? '')); ?>
                                                 </div>
                                                 <div class="text-sm text-gray-500 dark:text-gray-400">
-                                                    @<?php echo htmlspecialchars($member['username']); ?>
+                                                    @<?php echo htmlspecialchars($member['username'] ?? ''); ?>
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        <?php echo htmlspecialchars($member['account_no']); ?>
+                                        <?php echo htmlspecialchars($member['account_no'] ?? ''); ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-semibold">
                                         <?php echo number_format($member['total_contributions'], 2); ?> UGX
@@ -87,6 +93,19 @@ try {
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
+                            <!-- Grand Total Row -->
+                            <tr class="bg-gray-100 dark:bg-gray-700 font-bold border-t-2 border-gray-300 dark:border-gray-600">
+                                <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right uppercase tracking-wider">Total</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-700">
+                                    <?php echo number_format($grand_total_contributions, 2); ?> UGX
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-700">
+                                    <?php echo number_format($grand_total_withdrawals, 2); ?> UGX
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-indigo-700 dark:text-indigo-300">
+                                    <?php echo number_format($grand_total_net, 2); ?> UGX
+                                </td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
