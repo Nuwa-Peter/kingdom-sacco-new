@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/auth_check.php';
-check_permissions([1, 2, 3]); // Root, Chairman, Secretary
+// Accessible by Root, Chairman, Secretary, and the member who owns the record
+check_permissions([1, 2, 3, 5]);
 
 require_once 'config/db_connect.php';
 require_once 'templates/header.php';
@@ -16,6 +17,17 @@ if ($saving_id) {
         $saving = $stmt->fetch();
         if (!$saving) {
             $error = "Saving record not found.";
+        } else {
+            // Permission check: Non-admins can only edit their own UNVERIFIED savings
+            if (!in_array($_SESSION['role_id'], [1, 2, 3])) {
+                if ($saving['user_id'] != $_SESSION['user_id']) {
+                    $error = "You do not have permission to edit this record.";
+                    $saving = null;
+                } elseif ($saving['verified_by_user_id'] !== null) {
+                    $error = "Verified savings cannot be edited by members. Please contact an administrator.";
+                    $saving = null;
+                }
+            }
         }
     } catch (PDOException $e) {
         $error = "Database error: " . $e->getMessage();

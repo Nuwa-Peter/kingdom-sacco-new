@@ -46,12 +46,13 @@ try {
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Contributions</th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Withdrawals</th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Net Savings</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         <?php if (empty($members)): ?>
                             <tr>
-                                <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">No members found.</td>
+                                <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">No members found.</td>
                             </tr>
                         <?php else:
                             $grand_total_contributions = 0;
@@ -91,6 +92,9 @@ try {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-indigo-600 dark:text-indigo-400">
                                         <?php echo number_format($net_savings, 2); ?> UGX
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
+                                        <a href="view_member_savings.php?id=<?php echo $member['id']; ?>" class="text-indigo-600 hover:text-indigo-900">Manage Transactions</a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                             <!-- Grand Total Row -->
@@ -105,6 +109,7 @@ try {
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-indigo-700 dark:text-indigo-300">
                                     <?php echo number_format($grand_total_net, 2); ?> UGX
                                 </td>
+                                <td></td>
                             </tr>
                         <?php endif; ?>
                     </tbody>

@@ -69,7 +69,6 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
                 <li><a href="guarantor_requests.php" class="block py-2 px-4 rounded hover:bg-sky-400">Guarantor Requests</a></li>
                 <li><a href="generate_statement.php" class="block py-2 px-4 rounded hover:bg-sky-400">Download Statement</a></li>
                 <li><a href="member_directory.php" class="block py-2 px-4 rounded hover:bg-sky-400">Member Directory</a></li>
-                <li><a href="edit_user.php?id=<?php echo $_SESSION['user_id']; ?>" class="block py-2 px-4 rounded hover:bg-sky-400">Edit Profile</a></li>
 
                 <?php if (in_array($role_id, [1, 2, 3, 4])): // Admin-level actions ?>
                     <li class="pt-4">

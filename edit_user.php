@@ -32,6 +32,16 @@ try {
         throw new Exception("User not found.");
     }
 
+    // --- Leadership Role Limit Logic ---
+    // Roles 1-4 are limited to one person each.
+    $leadership_roles = [1 => 'Root', 2 => 'Chairman', 3 => 'Secretary', 4 => 'Treasurer'];
+    $taken_roles_stmt = $pdo->prepare("SELECT role_id FROM users WHERE role_id IN (1, 2, 3, 4) AND id != ?");
+    $taken_roles_stmt->execute([$user_id_to_edit]);
+    $taken_roles = $taken_roles_stmt->fetchAll(PDO::FETCH_COLUMN);
+
+    $available_leadership_roles = array_diff_key($leadership_roles, array_flip($taken_roles));
+    $all_leadership_taken = empty($available_leadership_roles);
+
     // Handle form submission
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $first_name = trim($_POST['first_name']);
@@ -124,13 +134,20 @@ try {
                         <?php if (in_array($_SESSION['role_id'], [1, 2])): ?>
                             <select name="role_id" id="role_id" required class="block w-full px-4 py-2 rounded-md">
                                 <option value="5" <?php echo $user['role_id'] == 5 ? 'selected' : ''; ?>>Member</option>
-                                <option value="4" <?php echo $user['role_id'] == 4 ? 'selected' : ''; ?>>Treasurer</option>
-                                <option value="3" <?php echo $user['role_id'] == 3 ? 'selected' : ''; ?>>Secretary</option>
-                                <option value="2" <?php echo $user['role_id'] == 2 ? 'selected' : ''; ?>>Chairman</option>
-                                <?php if ($_SESSION['role_id'] == 1): // Only Root can assign Root ?>
-                                    <option value="1" <?php echo $user['role_id'] == 1 ? 'selected' : ''; ?>>Root</option>
-                                <?php endif; ?>
+
+                                <?php foreach ($leadership_roles as $id => $name): ?>
+                                    <?php if ($id == 1 && $_SESSION['role_id'] != 1) continue; // Only Root can assign Root ?>
+
+                                    <?php if ($user['role_id'] == $id): ?>
+                                        <option value="<?php echo $id; ?>" selected><?php echo $name; ?></option>
+                                    <?php elseif (!in_array($id, $taken_roles)): ?>
+                                        <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
                             </select>
+                            <?php if ($all_leadership_taken && $user['role_id'] == 5): ?>
+                                <p class="text-xs text-orange-600 mt-1">Note: All leadership roles (Root, Chairman, Secretary, Treasurer) have been assigned.</p>
+                            <?php endif; ?>
                         <?php else: ?>
                             <input type="hidden" name="role_id" value="<?php echo $user['role_id']; ?>">
                             <div class="block w-full px-4 py-2 text-gray-700 bg-gray-100 border border-gray-300 rounded-md dark:bg-gray-600 dark:text-gray-300 dark:border-gray-500">
