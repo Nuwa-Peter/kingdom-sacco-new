@@ -63,9 +63,9 @@ try {
             $update_stmt->execute([$first_name, $surname, $username, $email, $phone, $role_id, $user_id_to_edit]);
 
             require_once 'includes/logging.php';
-            log_action($pdo, $_SESSION['user_id'], "Updated profile for user: {$username} (ID: {$user_id_to_edit})");
+            log_action($pdo, $_SESSION['user_id'], "Updated profile for member: {$username} (ID: {$user_id_to_edit})");
 
-            $success = "User profile updated successfully.";
+            $success = "Member profile updated successfully.";
             // Refresh user data to show new values
             $stmt->execute([$user_id_to_edit]);
             $user = $stmt->fetch();
@@ -79,7 +79,7 @@ try {
 
 <div class="container mx-auto mt-10 p-4">
     <div class="max-w-2xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">Edit User Profile</h1>
+        <h1 class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">Edit Member Profile</h1>
 
         <?php if ($error): ?>
             <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 dark:bg-red-900 dark:text-red-200 rounded-lg" role="alert"><?php echo $error; ?></div>

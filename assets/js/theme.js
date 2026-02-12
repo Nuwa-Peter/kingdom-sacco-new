@@ -12,14 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.remove('light-theme');
             if(darkThemeIcon) darkThemeIcon.classList.remove('hidden');
             if(lightThemeIcon) lightThemeIcon.classList.add('hidden');
-            if(logo) logo.src = 'assets/images/kingdomsacco_dark.png';
+            if(logo) logo.src = 'assets/images/kingdomsacco_light.png';
             localStorage.setItem('theme', 'dark');
         } else {
             document.body.classList.add('light-theme');
             document.body.classList.remove('dark-theme');
             if(darkThemeIcon) darkThemeIcon.classList.add('hidden');
             if(lightThemeIcon) lightThemeIcon.classList.remove('hidden');
-            if(logo) logo.src = 'assets/images/kingdomsacco_light.png';
+            if(logo) logo.src = 'assets/images/kingdomsacco_dark.png';
             localStorage.setItem('theme', 'light');
         }
     };

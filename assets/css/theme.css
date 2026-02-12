@@ -9,14 +9,16 @@
 :root {
     /* Light Theme (Default) */
     --bg-primary: #f9fafb;      /* Light gray page background */
-    --bg-secondary: #ffffff;    /* Card, header, modal backgrounds */
-    --bg-sidebar: #1f2937;      /* Dark gray for the sidebar */
-    --bg-hover: #4b5563;        /* Sidebar link hover */
+    --bg-secondary: #f0f9ff;    /* Very light blue for card, modal backgrounds */
+    --bg-header: #bae6fd;       /* Light blue for the header */
+    --bg-sidebar: #bae6fd;      /* Light blue for the sidebar */
+    --bg-hover: #7dd3fc;        /* Sidebar link hover */
     --bg-muted: #f3f4f6;        /* Muted backgrounds, e.g., table headers */
 
     --text-primary: #111827;    /* Main text color (almost black) */
     --text-secondary: #6b7280;  /* Lighter text for subtitles, placeholders */
-    --text-sidebar: #ffffff;    /* Text in the sidebar */
+    --text-sidebar: #0c4a6e;    /* Dark blue text in the sidebar */
+    --text-sidebar-muted: #0369a1; /* Muted blue for sidebar headers */
     --text-link: #3b82f6;       /* Hyperlinks */
 
     --border-color: #e5e7eb;    /* Borders for cards, tables */
@@ -25,7 +27,8 @@
 body.dark-theme {
     /* Dark Theme Overrides */
     --bg-primary: #111827;      /* Dark blue-gray page background */
-    --bg-secondary: #1f2937;    /* Card, header, modal backgrounds */
+    --bg-secondary: #1f2937;    /* Card, modal backgrounds */
+    --bg-header: #1f2937;       /* Header background in dark mode */
     --bg-sidebar: #0d1117;      /* Almost black for the sidebar */
     --bg-hover: #374151;        /* Sidebar link hover */
     --bg-muted: #374151;        /* Muted backgrounds */
@@ -33,6 +36,7 @@ body.dark-theme {
     --text-primary: #f9fafb;    /* Main text color (almost white) */
     --text-secondary: #9ca3af;  /* Lighter text for subtitles */
     --text-sidebar: #ffffff;
+    --text-sidebar-muted: #9ca3af;
     --text-link: #60a5fa;
 
     --border-color: #374151;    /* Borders for cards, tables */
@@ -69,7 +73,7 @@ body {
     color: var(--text-sidebar);
 }
 .sidebar a:hover {
-    background-color: var(--bg-hover);
+    background-color: var(--bg-hover) !important;
 }
 .sidebar .border-gray-700 {
     border-color: var(--bg-hover);
@@ -77,7 +81,7 @@ body {
 
 /* Header */
 .main-content header {
-    background-color: var(--bg-secondary);
+    background-color: var(--bg-header);
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 body.dark-theme .main-content header {

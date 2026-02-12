@@ -37,9 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Log the action
             require_once 'includes/logging.php';
             $new_user_id = $pdo->lastInsertId();
-            log_action($pdo, $_SESSION['user_id'], "Created new user: $username (ID: $new_user_id)");
+            log_action($pdo, $_SESSION['user_id'], "Created new member: $username (ID: $new_user_id)");
 
-            $success = "User created successfully with account number: $account_no";
+            $success = "Member created successfully with account number: $account_no";
 
         } catch (Exception $e) {
             $error = 'Error: ' . $e->getMessage();
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 
 <div class="container mx-auto mt-10">
-    <h2 class="text-2xl font-bold mb-5">Add New User</h2>
+    <h2 class="text-2xl font-bold mb-5">Add New Member</h2>
 
     <?php if ($success): ?>
         <div class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="mt-8 flex justify-end">
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-md focus:outline-none focus:shadow-outline transition duration-150 ease-in-out">
-                Add User
+                Add Member
             </button>
         </div>
     </form>
