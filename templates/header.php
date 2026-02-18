@@ -13,6 +13,9 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KINGDOM SACCO Management System</title>
     <link rel="icon" href="assets/images/kingdomsacco_light.png" type="image/png">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
@@ -20,6 +23,8 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
     <link rel="stylesheet" href="assets/css/theme.css">
     <script src="assets/js/main.js" defer></script>
     <script src="assets/js/theme.js" defer></script>
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
 </head>
 <body class="bg-gray-100 flex">
     <?php

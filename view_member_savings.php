@@ -27,8 +27,19 @@ try {
     }
 
     // Fetch individual savings transactions
-    $stmt = $pdo->prepare("SELECT id, amount, created_at, proof_image_path FROM savings WHERE user_id = ? ORDER BY created_at DESC");
-    $stmt->execute([$user_id]);
+    $search = $_GET['search'] ?? '';
+    $query = "SELECT id, amount, created_at, proof_image_path FROM savings WHERE user_id = :user_id";
+    $params = ['user_id' => $user_id];
+
+    if (!empty($search)) {
+        $query .= " AND amount LIKE :search";
+        $params['search'] = "%$search%";
+    }
+
+    $query .= " ORDER BY created_at DESC";
+
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
     $savings = $stmt->fetchAll();
 
     // Fetch total savings
@@ -43,9 +54,26 @@ try {
 
 <div class="container mx-auto mt-10 p-4">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Savings for <?php echo htmlspecialchars($user['first_name'] . ' ' . $user['surname']); ?></h1>
-            <a href="view_all_savings.php" class="text-indigo-600 hover:text-indigo-900 font-semibold">&larr; Back to Overview</a>
+
+            <div class="flex items-center gap-4">
+                <form action="view_member_savings.php" method="GET" class="flex">
+                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($user_id); ?>">
+                    <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search amount..."
+                           class="rounded-l-lg border-gray-300 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border py-2 px-4">
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-r-lg">
+                        Search
+                    </button>
+                </form>
+                <a href="export_member_savings_csv.php?id=<?php echo $user_id; ?>" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                    Export CSV
+                </a>
+                <a href="view_all_savings.php" class="text-indigo-600 hover:text-indigo-900 font-semibold">&larr; Back to Overview</a>
+            </div>
         </div>
 
         <p class="text-gray-600 dark:text-gray-400 mb-4">Account No: <span class="font-semibold"><?php echo htmlspecialchars($user['account_no']); ?></span></p>

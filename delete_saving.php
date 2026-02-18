@@ -47,8 +47,8 @@ try {
 
     $pdo->commit();
 
-    $redirect = in_array($_SESSION['role_id'], [1, 2, 3, 4]) ? "view_member_savings.php?id={$saving['user_id']}" : "dashboard.php";
-    header("Location: $redirect&success=Saving transaction deleted successfully.");
+    $redirect = in_array($_SESSION['role_id'], [1, 2, 3, 4]) ? "view_member_savings.php?id={$saving['user_id']}&" : "dashboard.php?";
+    header("Location: {$redirect}success=Saving transaction deleted successfully.");
     exit;
 
 } catch (Exception $e) {

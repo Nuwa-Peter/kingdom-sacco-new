@@ -51,6 +51,37 @@ try {
     $personal_loan_stmt->execute([$admin_user_id]);
     $admin_personal_stats['loan_balance'] = $personal_loan_stmt->fetchColumn() ?: 0;
 
+    // 5. Fetch Monthly Savings Trend (last 6 months)
+    $monthly_savings_stmt = $pdo->prepare("
+        SELECT
+            DATE_FORMAT(created_at, '%b %Y') as month,
+            SUM(amount) as total
+        FROM savings
+        GROUP BY month
+        ORDER BY MIN(created_at) DESC
+        LIMIT 6
+    ");
+    $monthly_savings_stmt->execute();
+    $monthly_savings_trend = array_reverse($monthly_savings_stmt->fetchAll());
+
+    // 6. Fetch Member Roles Distribution
+    $roles_dist_stmt = $pdo->query("
+        SELECT
+            role_id,
+            COUNT(*) as count
+        FROM users
+        GROUP BY role_id
+    ");
+    $roles_dist = $roles_dist_stmt->fetchAll();
+    $role_names = [1 => 'Root', 2 => 'Chairman', 3 => 'Secretary', 4 => 'Treasurer', 5 => 'Member'];
+    $roles_data = [];
+    foreach ($roles_dist as $row) {
+        $roles_data[] = [
+            'label' => $role_names[$row['role_id']] ?? 'Unknown',
+            'count' => $row['count']
+        ];
+    }
+
 } catch (PDOException $e) {
     $db_error = "Database error: " . $e->getMessage();
 }
@@ -95,18 +126,94 @@ try {
         </div>
     </div>
 
+    <!-- Visualizations & Quick Actions -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-8">
+        <!-- Monthly Savings Trend Chart -->
+        <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Monthly Savings Trend</h3>
+            <canvas id="savingsTrendChart" class="w-full" height="150"></canvas>
+        </div>
+
+        <!-- Member Roles Distribution -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-gray-700 mb-4">Roles Distribution</h3>
+            <div class="h-64">
+                <canvas id="rolesPieChart"></canvas>
+            </div>
+        </div>
+    </div>
+
     <!-- Quick Actions -->
     <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
         <h3 class="text-xl font-semibold text-gray-700 mb-4">Quick Actions</h3>
-        <div class="flex flex-wrap gap-4">
-            <a href="manage_requests.php" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Manage Requests</a>
-            <a href="add_user.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Add Member</a>
-            <a href="add_saving.php" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded">Add a Saving</a>
-            <?php if (in_array($_SESSION['role_id'], [1, 2])): ?>
-                <a href="apply_interest.php" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">Apply Loan Interest</a>
-            <?php endif; ?>
+            <div class="flex flex-col gap-3">
+                <a href="manage_requests.php" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded text-center">Manage Requests</a>
+                <a href="add_user.php" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded text-center">Add Member</a>
+                <a href="add_saving.php" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded text-center">Add a Saving</a>
+                <?php if (in_array($_SESSION['role_id'], [1, 2])): ?>
+                    <a href="apply_interest.php" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded text-center">Apply Loan Interest</a>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- Line Chart ---
+        const ctx = document.getElementById('savingsTrendChart').getContext('2d');
+        const labels = <?php echo json_encode(array_column($monthly_savings_trend, 'month')); ?>;
+        const data = <?php echo json_encode(array_column($monthly_savings_trend, 'total')); ?>;
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Savings (UGX)',
+                    data: data,
+                    borderColor: 'rgb(79, 70, 229)',
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // --- Pie Chart ---
+        const pieCtx = document.getElementById('rolesPieChart').getContext('2d');
+        const pieLabels = <?php echo json_encode(array_column($roles_data, 'label')); ?>;
+        const pieData = <?php echo json_encode(array_column($roles_data, 'count')); ?>;
+
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: pieLabels,
+                datasets: [{
+                    data: pieData,
+                    backgroundColor: [
+                        '#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#6366f1'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    });
+    </script>
 
     <!-- Recent Savings Transactions -->
     <div class="mt-8 bg-white p-6 rounded-lg shadow-md">
