@@ -1,5 +1,5 @@
 // sw.js
-const CACHE_NAME = 'kingdom-sacco-v1';
+const CACHE_NAME = 'kingdom-sacco-v2';
 const urlsToCache = [
   '/',
   '/index.php',
