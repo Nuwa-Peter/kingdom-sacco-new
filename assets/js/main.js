@@ -32,4 +32,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Listen for window resize events
     window.addEventListener('resize', handleResize);
+
+    // PWA Install Prompt
+    let deferredPrompt;
+    const installBtn = document.getElementById('installApp');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (installBtn) {
+            installBtn.classList.remove('hidden');
+        }
+    });
+
+    if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+                installBtn.classList.add('hidden');
+            }
+        });
+    }
+
+    window.addEventListener('appinstalled', (evt) => {
+        if (installBtn) {
+            installBtn.classList.add('hidden');
+        }
+        console.log('INSTALL: Success');
+    });
 });
