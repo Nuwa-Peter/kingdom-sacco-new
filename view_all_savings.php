@@ -6,6 +6,8 @@ check_permissions([1, 2, 3, 4]);
 require_once 'config/db_connect.php';
 require_once 'templates/header.php';
 
+$search = $_GET['search'] ?? '';
+
 try {
     $sql = "SELECT
                 u.id,
@@ -16,11 +18,21 @@ try {
                 u.avatar,
                 (SELECT COALESCE(SUM(amount), 0) FROM savings WHERE user_id = u.id) as total_contributions,
                 (SELECT COALESCE(SUM(amount), 0) FROM withdrawals WHERE user_id = u.id AND status = 'approved') as total_withdrawals
-            FROM users u
-            ORDER BY u.surname ASC, u.first_name ASC";
+            FROM users u";
+
+    $params = [];
+    if (!empty($search)) {
+        $sql .= " WHERE u.first_name LIKE :search
+                   OR u.surname LIKE :search
+                   OR u.username LIKE :search
+                   OR u.account_no LIKE :search";
+        $params['search'] = "%$search%";
+    }
+
+    $sql .= " ORDER BY u.surname ASC, u.first_name ASC";
 
     $stmt = $pdo->prepare($sql);
-    $stmt->execute();
+    $stmt->execute($params);
     $members = $stmt->fetchAll();
 } catch (PDOException $e) {
     $members = [];
@@ -30,7 +42,26 @@ try {
 
 <div class="container mx-auto mt-10 p-4">
     <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
-        <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-6">Member Savings Overview</h1>
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Member Savings Overview</h1>
+
+            <form action="view_all_savings.php" method="GET" class="flex w-full md:w-auto">
+                <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search members..."
+                       class="rounded-l-lg border-gray-300 dark:bg-gray-700 dark:text-white focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border py-2 px-4">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-r-lg">
+                    Search
+                </button>
+                <?php if (!empty($search)): ?>
+                    <a href="view_all_savings.php" class="ml-2 text-gray-500 hover:text-gray-700 flex items-center">Clear</a>
+                <?php endif; ?>
+            </form>
+            <a href="export_savings_csv.php" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                Export CSV
+            </a>
+        </div>
 
         <?php if (isset($error)): ?>
             <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
@@ -46,16 +77,23 @@ try {
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Contributions</th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Withdrawals</th>
                             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Net Savings</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         <?php if (empty($members)): ?>
                             <tr>
-                                <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">No members found.</td>
+                                <td colspan="6" class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 text-center">No members found.</td>
                             </tr>
-                        <?php else: ?>
-                            <?php foreach ($members as $member):
+                        <?php else:
+                            $grand_total_contributions = 0;
+                            $grand_total_withdrawals = 0;
+                            $grand_total_net = 0;
+                            foreach ($members as $member):
                                 $net_savings = $member['total_contributions'] - $member['total_withdrawals'];
+                                $grand_total_contributions += $member['total_contributions'];
+                                $grand_total_withdrawals += $member['total_withdrawals'];
+                                $grand_total_net += $net_savings;
                             ?>
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">
@@ -65,16 +103,16 @@ try {
                                             </div>
                                             <div class="ml-4">
                                                 <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                                    <?php echo htmlspecialchars($member['first_name'] . ' ' . $member['surname']); ?>
+                                                    <?php echo htmlspecialchars(($member['first_name'] ?? '') . ' ' . ($member['surname'] ?? '')); ?>
                                                 </div>
                                                 <div class="text-sm text-gray-500 dark:text-gray-400">
-                                                    @<?php echo htmlspecialchars($member['username']); ?>
+                                                    @<?php echo htmlspecialchars($member['username'] ?? ''); ?>
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        <?php echo htmlspecialchars($member['account_no']); ?>
+                                        <?php echo htmlspecialchars($member['account_no'] ?? ''); ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 font-semibold">
                                         <?php echo number_format($member['total_contributions'], 2); ?> UGX
@@ -85,8 +123,25 @@ try {
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-indigo-600 dark:text-indigo-400">
                                         <?php echo number_format($net_savings, 2); ?> UGX
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-medium">
+                                        <a href="view_member_savings.php?id=<?php echo $member['id']; ?>" class="text-indigo-600 hover:text-indigo-900">Manage Transactions</a>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
+                            <!-- Grand Total Row -->
+                            <tr class="bg-gray-100 dark:bg-gray-700 font-bold border-t-2 border-gray-300 dark:border-gray-600">
+                                <td colspan="2" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right uppercase tracking-wider">Total</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-700">
+                                    <?php echo number_format($grand_total_contributions, 2); ?> UGX
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-700">
+                                    <?php echo number_format($grand_total_withdrawals, 2); ?> UGX
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-indigo-700 dark:text-indigo-300">
+                                    <?php echo number_format($grand_total_net, 2); ?> UGX
+                                </td>
+                                <td></td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>

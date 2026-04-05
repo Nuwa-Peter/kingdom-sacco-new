@@ -13,6 +13,9 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KINGDOM SACCO Management System</title>
     <link rel="icon" href="assets/images/kingdomsacco_light.png" type="image/png">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
@@ -20,6 +23,8 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
     <link rel="stylesheet" href="assets/css/theme.css">
     <script src="assets/js/main.js" defer></script>
     <script src="assets/js/theme.js" defer></script>
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous" defer></script>
 </head>
 <body class="bg-gray-100 flex">
     <?php
@@ -68,6 +73,7 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
                 <li><a href="repay_loan.php" class="block py-2 px-4 rounded hover:bg-sky-400">Repay Loan</a></li>
                 <li><a href="guarantor_requests.php" class="block py-2 px-4 rounded hover:bg-sky-400">Guarantor Requests</a></li>
                 <li><a href="generate_statement.php" class="block py-2 px-4 rounded hover:bg-sky-400">Download Statement</a></li>
+                <li><a href="member_directory.php" class="block py-2 px-4 rounded hover:bg-sky-400">Member Directory</a></li>
 
                 <?php if (in_array($role_id, [1, 2, 3, 4])): // Admin-level actions ?>
                     <li class="pt-4">
@@ -77,7 +83,7 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
                         <li><a href="add_user.php" class="block py-2 px-4 rounded hover:bg-sky-400">Add Member</a></li>
                     <?php endif; ?>
                     <li><a href="add_saving.php" class="block py-2 px-4 rounded hover:bg-sky-400">Add Saving</a></li>
-                    <li><a href="view_all_savings.php" class="block py-2 px-4 rounded hover:bg-sky-400">View All Savings</a></li>
+                    <li><a href="view_all_savings.php" class="block py-2 px-4 rounded hover:bg-sky-400">View Savings</a></li>
                     <li><a href="manage_requests.php" class="block py-2 px-4 rounded hover:bg-sky-400">Manage Requests</a></li>
                      <?php if (in_array($role_id, [1, 2])): ?>
                         <li><a href="apply_interest.php" class="block py-2 px-4 rounded hover:bg-sky-400">Apply Interest</a></li>
@@ -95,7 +101,6 @@ $role_id = $_SESSION['role_id'] ?? 0; // Default to 0 if not logged in
                     <li class="pt-4">
                         <span class="px-4 text-xs font-semibold uppercase" style="color: var(--text-sidebar-muted)">Advanced</span>
                     </li>
-                    <li><a href="member_directory.php" class="block py-2 px-4 rounded hover:bg-sky-400">Member Directory</a></li>
                     <li><a href="admin_reset_password.php" class="block py-2 px-4 rounded hover:bg-sky-400">Reset Member Password</a></li>
                     <li><a href="admin_audit_view.php" class="block py-2 px-4 rounded hover:bg-sky-400">Audit View</a></li>
                     <li><a href="admin_analytics_view.php" class="block py-2 px-4 rounded hover:bg-sky-400">Analytics View</a></li>

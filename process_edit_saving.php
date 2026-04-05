@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/auth_check.php';
-check_permissions([1, 2, 3]); // Root, Chairman, Secretary
+// Accessible by Root, Chairman, Secretary, and the member who owns the record
+check_permissions([1, 2, 3, 5]);
 
 require_once 'config/db_connect.php';
 
@@ -25,6 +26,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
 
+        // Fetch the saving record to check permissions
+        $stmt = $pdo->prepare("SELECT user_id, verified_by_user_id FROM savings WHERE id = ?");
+        $stmt->execute([$saving_id]);
+        $saving = $stmt->fetch();
+
+        if (!$saving) {
+            throw new Exception("Saving record not found.");
+        }
+
+        // Permission check: Non-admins can only edit their own UNVERIFIED savings
+        if (!in_array($_SESSION['role_id'], [1, 2, 3])) {
+            if ($saving['user_id'] != $_SESSION['user_id']) {
+                throw new Exception("You do not have permission to edit this record.");
+            }
+            if ($saving['verified_by_user_id'] !== null) {
+                throw new Exception("Verified savings cannot be edited by members. Please contact an administrator.");
+            }
+        }
+
         // 1. Update the saving record
         $stmt = $pdo->prepare("UPDATE savings SET amount = ? WHERE id = ?");
         $stmt->execute([$new_amount, $saving_id]);
@@ -42,10 +62,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $pdo->commit();
 
-        header("Location: dashboard.php?success=Saving updated successfully.");
+        $redirect = in_array($_SESSION['role_id'], [1, 2, 3, 4]) ? "view_member_savings.php?id={$saving['user_id']}&" : "dashboard.php?";
+        header("Location: {$redirect}success=Saving updated successfully.");
         exit;
 
-    } catch (PDOException $e) {
+    } catch (Exception $e) {
         $pdo->rollBack();
         // Redirect with a generic error; specific errors could be logged for the admin
         header("Location: edit_saving.php?id={$saving_id}&error=Database error occurred.");

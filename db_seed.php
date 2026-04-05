@@ -38,42 +38,22 @@ try {
     echo "Foreign key checks enabled.\n";
 
     // --- Seed Users Table ---
-    $users_to_seed = [
-        [
-            'id' => 1,
-            'account_no' => 'KS00000',
-            'first_name' => 'Root',
-            'surname' => 'User',
-            'username' => 'root',
-            'email' => 'root@kingdomsacco.dev',
-            'phone' => null,
-            'password' => '$2y$10$CQoZZXkbiWu6/s9vUgBB7OtQuf0JuSOOSYuwsuQDuHSxd1YQy4wbi', // Default password: 'password'
-            'role_id' => 1,
-            'avatar' => null
-        ],
-        [
-            'id' => 2,
-            'account_no' => 'KS00001',
-            'first_name' => 'Chairman',
-            'surname' => 'Admin',
-            'username' => 'chairman',
-            'email' => 'chairman@kingdomsacco.dev',
-            'phone' => null,
-            'password' => '$2y$10$CQoZZXkbiWu6/s9vUgBB7OtQuf0JuSOOSYuwsuQDuHSxd1YQy4wbi', // Default password: 'password'
-            'role_id' => 2,
-            'avatar' => null
-        ]
-    ];
+    // Default Root and Chairman accounts removed per user request.
+    $users_to_seed = [];
 
-    $user_stmt = $pdo->prepare(
-        "INSERT INTO `users` (`id`, `account_no`, `first_name`, `surname`, `username`, `email`, `phone`, `password`, `role_id`, `avatar`)
-         VALUES (:id, :account_no, :first_name, :surname, :username, :email, :phone, :password, :role_id, :avatar)"
-    );
+    if (!empty($users_to_seed)) {
+        $user_stmt = $pdo->prepare(
+            "INSERT INTO `users` (`id`, `account_no`, `first_name`, `surname`, `username`, `email`, `phone`, `password`, `role_id`, `avatar`)
+             VALUES (:id, :account_no, :first_name, :surname, :username, :email, :phone, :password, :role_id, :avatar)"
+        );
 
-    foreach ($users_to_seed as $user) {
-        $user_stmt->execute($user);
+        foreach ($users_to_seed as $user) {
+            $user_stmt->execute($user);
+        }
+        echo "Seeded " . count($users_to_seed) . " users.\n";
+    } else {
+        echo "No users to seed.\n";
     }
-    echo "Seeded " . count($users_to_seed) . " users.\n";
 
     // --- Seed System Settings Table ---
     $settings_stmt = $pdo->prepare("INSERT INTO `system_settings` (`setting_key`, `setting_value`) VALUES (?, ?)");

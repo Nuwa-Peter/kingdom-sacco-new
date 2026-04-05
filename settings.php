@@ -53,12 +53,14 @@ if (isset($_POST['update_avatar'])) {
 
 // Handle Profile Information Update
 if (isset($_POST['update_profile'])) {
+    $first_name = trim($_POST['first_name']);
+    $surname = trim($_POST['surname']);
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
     $phone = trim($_POST['phone']);
 
-    if (empty($username) || empty($email)) {
-        $profile_error = "Username and Email cannot be empty.";
+    if (empty($first_name) || empty($surname) || empty($username) || empty($email)) {
+        $profile_error = "First Name, Surname, Username and Email cannot be empty.";
     } else {
         try {
             $stmt = $pdo->prepare("SELECT id FROM users WHERE (username = ? OR email = ?) AND id != ?");
@@ -66,8 +68,8 @@ if (isset($_POST['update_profile'])) {
             if ($stmt->fetch()) {
                 $profile_error = "Username or Email is already in use by another account.";
             } else {
-                $update_stmt = $pdo->prepare("UPDATE users SET username = ?, email = ?, phone = ? WHERE id = ?");
-                if ($update_stmt->execute([$username, $email, $phone, $user_id])) {
+                $update_stmt = $pdo->prepare("UPDATE users SET first_name = ?, surname = ?, username = ?, email = ?, phone = ? WHERE id = ?");
+                if ($update_stmt->execute([$first_name, $surname, $username, $email, $phone, $user_id])) {
                     $profile_success = "Your profile has been updated successfully.";
                     $_SESSION['username'] = $username;
                 } else {
@@ -120,7 +122,7 @@ if (isset($_POST['change_password'])) {
 
 // Fetch current user data to populate the form
 try {
-    $stmt = $pdo->prepare("SELECT username, email, phone FROM users WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT first_name, surname, username, email, phone FROM users WHERE id = ?");
     $stmt->execute([$user_id]);
     $user = $stmt->fetch();
     if (!$user) {
@@ -179,13 +181,23 @@ try {
         <?php endif; ?>
 
         <form action="settings.php" method="POST">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label for="first_name" class="block text-gray-700 text-sm font-bold mb-2">First Name:</label>
+                    <input type="text" name="first_name" id="first_name" value="<?php echo htmlspecialchars($user['first_name'] ?? ''); ?>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+                <div>
+                    <label for="surname" class="block text-gray-700 text-sm font-bold mb-2">Surname:</label>
+                    <input type="text" name="surname" id="surname" value="<?php echo htmlspecialchars($user['surname'] ?? ''); ?>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                </div>
+            </div>
             <div class="mb-4">
                 <label for="username" class="block text-gray-700 text-sm font-bold mb-2">Username:</label>
-                <input type="text" name="username" id="username" value="<?php echo htmlspecialchars($user['username']); ?>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="text" name="username" id="username" value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             </div>
             <div class="mb-4">
                 <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
-                <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <input type="email" name="email" id="email" value="<?php echo htmlspecialchars($user['email'] ?? ''); ?>" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
             </div>
             <div class="mb-6">
                 <label for="phone" class="block text-gray-700 text-sm font-bold mb-2">Phone:</label>

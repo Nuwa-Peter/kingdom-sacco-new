@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/auth_check.php';
-check_permissions([1, 2, 3]); // Root, Chairman, Secretary
+// Accessible by Root, Chairman, Secretary, and the member who owns the record
+check_permissions([1, 2, 3, 5]);
 
 require_once 'config/db_connect.php';
 
@@ -17,12 +18,22 @@ try {
     $pdo->beginTransaction();
 
     // 1. Get saving details before deleting for logging purposes
-    $stmt = $pdo->prepare("SELECT user_id, amount FROM savings WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT user_id, amount, verified_by_user_id FROM savings WHERE id = ?");
     $stmt->execute([$saving_id]);
     $saving = $stmt->fetch();
 
     if (!$saving) {
         throw new Exception("Saving record not found.");
+    }
+
+    // Permission check: Non-admins can only delete their own UNVERIFIED savings
+    if (!in_array($_SESSION['role_id'], [1, 2, 3])) {
+        if ($saving['user_id'] != $_SESSION['user_id']) {
+            throw new Exception("You do not have permission to delete this record.");
+        }
+        if ($saving['verified_by_user_id'] !== null) {
+            throw new Exception("Verified savings cannot be deleted by members. Please contact an administrator.");
+        }
     }
 
     // 2. Delete the saving record
@@ -36,7 +47,8 @@ try {
 
     $pdo->commit();
 
-    header("Location: admin_dashboard.php?success=Saving transaction deleted successfully.");
+    $redirect = in_array($_SESSION['role_id'], [1, 2, 3, 4]) ? "view_member_savings.php?id={$saving['user_id']}&" : "dashboard.php?";
+    header("Location: {$redirect}success=Saving transaction deleted successfully.");
     exit;
 
 } catch (Exception $e) {
